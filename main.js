@@ -10,8 +10,29 @@
 
     self.Board.prototype = {
         get elements() {
-            var elements = this.bars;
+            var elements = this.bars.map(function(bar){return bar;});
+            elements.push(this.ball);
             return elements;
+        }
+    }
+})();
+
+(function(){
+    self.Ball=function(x,y,radius,board){
+        this.x=x;
+        this.y=y;
+        this.radius=radius;
+        this.speed_y=0;
+        this.speed_x=3;
+        this.board=board;
+        this.direction=1;
+        board.ball=this;
+        this.kind="circle";
+    }
+    self.Ball.prototype={
+        move: function(){
+            this.x+=(this.speed_x*this.direction);
+            this.y+=(this.speed_y);
         }
     }
 })();
@@ -58,6 +79,11 @@
                 var el = this.board.elements[index];
                 draw(this.ctx, el);
             }
+        },
+        play: function(){
+            this.clean();
+            this.draw();
+            this.board.ball.move();
         }
     }
 
@@ -66,35 +92,33 @@
             case "rectangle":
                 ctx.fillRect(element.x, element.y, element.width, element.height);
                 break;
+            case "circle":
+                ctx.beginPath();
+                ctx.arc(element.x,element.y,element.radius,0,7);
+                ctx.fill();
+                ctx.closePath();
         }
     }
 })();
 
 function main() {
-    board_view.clean();
-    board_view.draw();
+    // board_view.clean();
+    // board_view.draw();
+    board_view.play();
     window.requestAnimationFrame(main);
 }
 
 var board = new Board(800, 400);
-//let bar_2;
-let bar_2=new Bar(20,100,40,100, board);
-
-bar_2 = new Bar(bar_2.x, bar_2.y, bar_2.width, bar_2.height, bar_2.board);
-var bar = new Bar(700, 100, 40, 100, board);
+let bar_2=new Bar(20,100,40,100, board);//se agrega esta linea porque por alguna misteriosa razon, 
+bar_2 = new Bar(bar_2.x, bar_2.y, bar_2.width, bar_2.height, bar_2.board); //cuando creo el objeto, esta no es de tipo Bar.
+var bar = new Bar(740, 100, 40, 100, board);
 this.board.bars.push(bar);
 this.board.bars.push(bar_2);
+var ball = new Ball(400,200,15,board);
 var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas, board);
 
 document.addEventListener('keydown', function (ev) {
-    // try{
-    //     bar_2.getData();
-    // } catch(err){
-    //     console.log(err)
-    //     bar_2 = new Bar(bar_2.x, bar_2.y, bar_2.width, bar_2.height, bar_2.board);
-    // }
-    
     if (ev.keyCode == 87) {
         bar_2.up();
     }

@@ -26,33 +26,33 @@
         this.speed_x = 3;
         this.board = board;
         this.direction = 1;
-        this.verticalDirection=1;
-        this.bounce_angle=0;
+        this.verticalDirection = 1;
+        this.bounce_angle = 0;
         board.ball = this;
         this.kind = "circle";
-        this.max_bounce_angle=Math.PI/12;
-        this.speed=3;
+        this.max_bounce_angle = Math.PI / 12;
+        this.speed = 3;
     }
     self.Ball.prototype = {
         move: function () {
             this.x += (this.speed_x * this.direction);
-            this.y += (this.speed_y*this.verticalDirection);
+            this.y += (this.speed_y * this.verticalDirection);
         },
-        get width(){
-            return this.radius*2;
+        get width() {
+            return this.radius * 2;
         },
-        get height(){
-            return this.radius*2;
+        get height() {
+            return this.radius * 2;
         }
         ,
-        collision: function(){
-            var relative_intersect_y=(bar.y+(bar.height/2))-this.y;
-            var normalized_intersect_y=relative_intersect_y/(bar.height/2);
-            this.bounce_angle=normalized_intersect_y*this.max_bounce_angle;
-            this.speed_y=this.speed*-Math.sin(this.bounce_angle);
-            this.speed_x=this.speed*Math.cos(this.bounce_angle);
-            if(this.x>(this.board.width)/2) this.direction=-1;
-            else this.direction=1;
+        collision: function () {
+            var relative_intersect_y = (bar.y + (bar.height / 2)) - this.y;
+            var normalized_intersect_y = relative_intersect_y / (bar.height / 2);
+            this.bounce_angle = normalized_intersect_y * this.max_bounce_angle;
+            this.speed_y = this.speed * -Math.sin(this.bounce_angle);
+            this.speed_x = this.speed * Math.cos(this.bounce_angle);
+            if (this.x > (this.board.width) / 2) this.direction = -1;
+            else this.direction = 1;
         }
     }
 })();
@@ -112,8 +112,8 @@
         },
         check_collisions: function () {
             for (let index = this.board.bars.length - 1; index >= 0; index--) {
-                var bar=this.board.bars[index];
-                if(this.hit(bar,this.board.ball)){
+                var bar = this.board.bars[index];
+                if (this.hit(bar, this.board.ball)) {
                     this.board.ball.collision(bar);
                 }
 
@@ -138,15 +138,21 @@
             }
             return hit;
         },
-        check_goal: function(){
-            if(this.board.ball.x<=0||this.board.ball.x>=board.width){
-                board.game_over=true;
+        check_goal: function () {
+            if (this.board.ball.x <= 0) {
+                board.game_over = true;
                 board.playing = !board.playing;
+                scoreP2+=1;
+            }
+            else if(this.board.ball.x >= board.width){
+                board.game_over = true;
+                board.playing = !board.playing;
+                scoreP1+=1;
             }
         },
-        borderHit: function(){
-            if((board.ball.y+board.ball.radius)<=30||(board.ball.y+board.ball.radius)>=board.height){
-                ball.verticalDirection=-1*ball.verticalDirection;
+        borderHit: function () {
+            if ((board.ball.y + board.ball.radius) <= 30 || (board.ball.y + board.ball.radius) >= board.height) {
+                ball.verticalDirection = -1 * ball.verticalDirection;
             }
         }
     }
@@ -166,6 +172,7 @@
 })();
 
 document.addEventListener('keydown', function (ev) {
+    console.log(ev.keyCode);
     ev.preventDefault();
     if (ev.keyCode == 87) {
         bar_2.up();
@@ -182,6 +189,11 @@ document.addEventListener('keydown', function (ev) {
     else if (ev.keyCode == 32) {
         board.playing = !board.playing;
     }
+    else if (ev.keyCode == 82) {
+        board.ball.x = 400;
+        board.ball.y = 200;
+        board.playing = false;
+    }
 }
 );
 
@@ -190,7 +202,8 @@ function main() {
     board_view.play();
     window.requestAnimationFrame(main);
 }
-
+let scoreP1=0;
+let scoreP2=0;
 var board = new Board(800, 400);
 let bar_2 = new Bar(20, 100, 40, 100, board);//se agrega esta linea porque por alguna misteriosa razon, 
 bar_2 = new Bar(bar_2.x, bar_2.y, bar_2.width, bar_2.height, bar_2.board); //cuando creo el objeto, esta no es de tipo Bar.
@@ -200,11 +213,12 @@ this.board.bars.push(bar_2);
 var ball = new Ball(400, 200, 15, board);
 var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas, board);
-
+/* let score=[];
+score.push(scoreP1);
+score.push(scoreP2); */
+//document.getElementById("score").innerHTML = scoreP1;
 
 
 
 window.addEventListener('load', main);
 window.requestAnimationFrame(main);
-this.ball.x=400;
-this.ball.y=200;

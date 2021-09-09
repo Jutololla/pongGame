@@ -26,6 +26,7 @@
         this.speed_x = 3;
         this.board = board;
         this.direction = 1;
+        this.verticalDirection=1;
         this.bounce_angle=0;
         board.ball = this;
         this.kind = "circle";
@@ -35,7 +36,7 @@
     self.Ball.prototype = {
         move: function () {
             this.x += (this.speed_x * this.direction);
-            this.y += (this.speed_y);
+            this.y += (this.speed_y*this.verticalDirection);
         },
         get width(){
             return this.radius*2;
@@ -104,6 +105,7 @@
                 this.clean();
                 this.draw();
                 this.check_collisions();
+                this.borderHit();
                 this.check_goal();
                 this.board.ball.move();
             }
@@ -141,6 +143,11 @@
                 board.game_over=true;
                 board.playing = !board.playing;
             }
+        },
+        borderHit: function(){
+            if((board.ball.y+board.ball.radius)<=30||(board.ball.y+board.ball.radius)>=board.height){
+                ball.verticalDirection=-1*ball.verticalDirection;
+            }
         }
     }
 
@@ -157,22 +164,6 @@
         }
     }
 })();
-
-function main() {
-    board_view.draw();
-    board_view.play();
-    window.requestAnimationFrame(main);
-}
-
-var board = new Board(800, 400);
-let bar_2 = new Bar(20, 100, 40, 100, board);//se agrega esta linea porque por alguna misteriosa razon, 
-bar_2 = new Bar(bar_2.x, bar_2.y, bar_2.width, bar_2.height, bar_2.board); //cuando creo el objeto, esta no es de tipo Bar.
-var bar = new Bar(740, 100, 40, 100, board);
-this.board.bars.push(bar);
-this.board.bars.push(bar_2);
-var ball = new Ball(400, 200, 15, board);
-var canvas = document.getElementById('canvas');
-var board_view = new BoardView(canvas, board);
 
 document.addEventListener('keydown', function (ev) {
     ev.preventDefault();
@@ -194,5 +185,26 @@ document.addEventListener('keydown', function (ev) {
 }
 );
 
+function main() {
+    board_view.draw();
+    board_view.play();
+    window.requestAnimationFrame(main);
+}
+
+var board = new Board(800, 400);
+let bar_2 = new Bar(20, 100, 40, 100, board);//se agrega esta linea porque por alguna misteriosa razon, 
+bar_2 = new Bar(bar_2.x, bar_2.y, bar_2.width, bar_2.height, bar_2.board); //cuando creo el objeto, esta no es de tipo Bar.
+var bar = new Bar(740, 100, 40, 100, board);
+this.board.bars.push(bar);
+this.board.bars.push(bar_2);
+var ball = new Ball(400, 200, 15, board);
+var canvas = document.getElementById('canvas');
+var board_view = new BoardView(canvas, board);
+
+
+
+
 window.addEventListener('load', main);
 window.requestAnimationFrame(main);
+this.ball.x=400;
+this.ball.y=200;

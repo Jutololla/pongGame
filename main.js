@@ -81,9 +81,11 @@
             }
         },
         play: function(){
+            if(this.board.playing){
             this.clean();
             this.draw();
             this.board.ball.move();
+            }
         }
     }
 
@@ -102,8 +104,7 @@
 })();
 
 function main() {
-    // board_view.clean();
-    // board_view.draw();
+    board_view.draw();
     board_view.play();
     window.requestAnimationFrame(main);
 }
@@ -119,17 +120,21 @@ var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas, board);
 
 document.addEventListener('keydown', function (ev) {
+    ev.preventDefault();
     if (ev.keyCode == 87) {
         bar_2.up();
     }
-    if (ev.keyCode == 83) {
+    else if (ev.keyCode == 83) {
         bar_2.down();
     }
-    if (ev.keyCode == 38) {
+    else if (ev.keyCode == 38) {
         bar.up();
     }
-    if (ev.keyCode == 40) {
+    else if (ev.keyCode == 40) {
         bar.down();
+    }
+    else if (ev.keyCode == 32) {
+        board.playing=!board.playing;
     }
 }
 );

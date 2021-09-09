@@ -33,8 +33,8 @@
             up: function () {
                 this.y -= this.speed;
             },
-            toString: function(){
-                return "x "+this.x+"; y "+this.y;
+            getData: function () {
+                return "x " + this.x + "; y " + this.y;
             }
         }
     }
@@ -59,41 +59,49 @@
     }
 
     function draw(ctx, element) {
-            switch (element.kind) {
-                case "rectangle":
-                    ctx.fillRect(element.x, element.y, element.width, element.height);
-                    break;
-            }
+        switch (element.kind) {
+            case "rectangle":
+                ctx.fillRect(element.x, element.y, element.width, element.height);
+                break;
+        }
     }
 })();
-
-var board = new Board(800, 400);
-    var bar1 = new Bar(20, 100, 40, 100, board);
-    var bar2 = new Bar(700, 100, 40, 100, board);
-    var canvas = document.getElementById('canvas');
-    var board_view = new BoardView(canvas, board);
-
-
-document.addEventListener('keydown', function (ev) {
-    ev.preventDefault();
-    if (ev.keyCode == 38) {
-        bar1.up();
-    }
-    else if (ev.keyCode == 40) {
-        bar1.down();
-    }
-    else if (ev.keyCode == 87) {
-        bar2.down();
-    }
-    else if (ev.keyCode == 83) {
-        bar2.down();
-    }
-}
-);
-window.addEventListener('load', main);
-window.requestAnimationFrame(main);
 
 function main() {
     board_view.draw();
     window.requestAnimationFrame(main);
 }
+
+var board = new Board(800, 400);
+
+var barbar = new Bar(20,100,40,100, board);
+var bar = new Bar(700, 100, 40, 100, board);
+
+var canvas = document.getElementById('canvas');
+var board_view = new BoardView(canvas, board);
+
+document.addEventListener('keydown', function (ev) {
+    try{
+        barbar.getData();
+    } catch(err){
+        console.log(err)
+        barbar = new Bar(barbar.x, barbar.y, barbar.width, barbar.height, barbar.board);
+    }
+    
+    if (ev.keyCode == 87) {
+        barbar.up();
+    }
+    if (ev.keyCode == 83) {
+        barbar.down();
+    }
+    if (ev.keyCode == 38) {
+        bar.up();
+    }
+    if (ev.keyCode == 40) {
+        bar.down();
+    }
+}
+);
+
+window.addEventListener('load', main);
+window.requestAnimationFrame(main);
